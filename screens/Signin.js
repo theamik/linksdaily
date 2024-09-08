@@ -6,6 +6,8 @@ import SubmitButton from "../components/auth/SubmitButton";
 import axios from "axios";
 import CircleLogo from "../components/auth/CircleLogo";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { API } from "../config";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Signin = ({ navigation }) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
@@ -19,18 +21,27 @@ const Signin = ({ navigation }) => {
     }
     console.log("Sign in request=>", email, password);
     try {
-      const { data } = await axios.post("http://localhost:8080/signin", {
+      const { data } = await axios.post(`${API}/signin`, {
         email,
         password,
       });
-      setLoading(false);
-      console.log("Sing in successful =>", data);
-      alert("Sing in successful");
+      if (data.error) {
+        alert(data.error)
+        setLoading(false);
+
+      } else {
+        await AsyncStorage.setItem("@auth", JSON.stringify(data))
+        setLoading(false);
+        console.log("Sing in successful =>", data);
+        alert("Sing in successful");
+      }
     } catch (error) {
+      alert("Sing in failed try again")
       console.log(error);
       setLoading(false);
     }
   };
+ 
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
@@ -53,7 +64,7 @@ const Signin = ({ navigation }) => {
           secureTextEntry={true}
         />
         <SubmitButton
-          title="Sign Up"
+          title="Sign In"
           handleSubmit={handleSubmit}
           loading={loading}
         />
