@@ -2,18 +2,24 @@ import Text from "@kaloraat/react-native-text";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, Image, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import CircleLogo from "../components/auth/CircleLogo";
 import SubmitButton from "../components/auth/SubmitButton";
 import UserInput from "../components/auth/UserInput";
 import { AuthContext } from "../contex/auth";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import * as ImagePicker from "expo-image-picker";
 
 const Account = ({ navigation }) => {
   const [name, setName] = useState();
   const [email, setEmail] = useState();
   const [role, setRole] = useState();
-  const [image, setImage] = useState();
+  const [image, setImage] = useState({
+    url: "",
+    public_id: "",
+  });
+  const [uploadImage, setUploadImage] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
   const [state, setState] = useContext(AuthContext);
@@ -56,11 +62,76 @@ const Account = ({ navigation }) => {
       setLoading(false);
     }
   };
+  const handleImageUpload = async () => {
+    let permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permissionResult.granted) {
+      alert("Camera access is required!");
+      return;
+    }
+
+    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      base64: true,
+    });
+    const dataa = Object.values(pickerResult);
+    if (pickerResult.cancelled) {
+      return;
+    }
+    let base64Image = `data:image/png;base64,${pickerResult.assets[0].base64}`;
+    setUploadImage(base64Image);
+  };
 
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
-        <CircleLogo />
+        <CircleLogo>
+          {image && image.url ? (
+            <Image
+              source={{ uri: image.url }}
+              style={{
+                height: 190,
+                width: 190,
+                borderRadius: 100,
+                marginVertical: 20,
+              }}
+            />
+          ) : uploadImage ? (
+            <>
+              <Image
+                source={{ uri: uploadImage }}
+                style={{
+                  height: 190,
+                  width: 190,
+                  borderRadius: 100,
+                  marginVertical: 20,
+                }}
+              />
+            </>
+          ) : (
+            <TouchableOpacity onPress={handleImageUpload}>
+              <FontAwesome5 name="camera" size={25} color="orange" />
+            </TouchableOpacity>
+          )}
+        </CircleLogo>
+        {image && image.url ? (
+          <TouchableOpacity onPress={handleImageUpload}>
+            <FontAwesome5
+              name="camera"
+              size={25}
+              color="orange"
+              style={{
+                marginTop: -5,
+                marginBottom: 10,
+                alignSelf: "center",
+              }}
+            />
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
         <Text center title style={{ paddingBottom: 10 }}>
           {name}
         </Text>
