@@ -1,12 +1,12 @@
-import { StyleSheet, View } from "react-native";
-import React, { useContext, useState } from "react";
 import Text from "@kaloraat/react-native-text";
-import UserInput from "../components/auth/UserInput";
-import SubmitButton from "../components/auth/SubmitButton";
-import axios from "axios";
-import CircleLogo from "../components/auth/CircleLogo";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import CircleLogo from "../components/auth/CircleLogo";
+import SubmitButton from "../components/auth/SubmitButton";
+import UserInput from "../components/auth/UserInput";
 import { AuthContext } from "../contex/auth";
 
 const Signin = ({ navigation }) => {
