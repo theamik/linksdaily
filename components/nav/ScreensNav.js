@@ -6,6 +6,9 @@ import Signin from "../../screens/Signin";
 import Signup from "../../screens/Signup";
 import { AuthContext } from "../../contex/auth";
 import HeaderTabs from "./HeaderTabs";
+import Account from "../../screens/Account";
+import Post from "../../screens/Post";
+import Links from "../../screens/Links";
 
 const Stack = createNativeStackNavigator();
 export default function ScreensNav() {
@@ -13,7 +16,7 @@ export default function ScreensNav() {
   const authenticated = state && state.token !== "" && state.user !== null;
   return (
     <Stack.Navigator
-      initialRouteName="Home"
+      initialRouteName="Account"
       //   screenOptions={{ headerShown: false }}
     >
       {authenticated ? (
@@ -26,6 +29,9 @@ export default function ScreensNav() {
               headerRight: () => <HeaderTabs />,
             }}
           />
+          <Stack.Screen name="Account" component={Account} />
+          <Stack.Screen name="Post" component={Post} />
+          <Stack.Screen name="Links" component={Links} />
         </>
       ) : (
         <>
