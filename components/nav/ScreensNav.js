@@ -16,7 +16,7 @@ export default function ScreensNav() {
   const authenticated = state && state.token !== "" && state.user !== null;
   return (
     <Stack.Navigator
-      initialRouteName="Account"
+      initialRouteName="Home"
       //   screenOptions={{ headerShown: false }}
     >
       {authenticated ? (

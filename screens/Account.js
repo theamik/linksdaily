@@ -25,39 +25,31 @@ const Account = ({ navigation }) => {
   const [state, setState] = useContext(AuthContext);
   useEffect(() => {
     if (state) {
-      const { name, email, role } = state.user;
+      const { name, email, role, image } = state.user;
       setName(name);
       setEmail(email);
       setRole(role);
+      setImage(image);
     }
   }, [state]);
 
   const handleSubmit = async () => {
     setLoading(true);
-    if (!email || !password) {
-      alert("All fields are required");
-      setLoading(false);
-      return;
-    }
-    console.log("Sign in request=>", email, password);
+
     try {
-      const { data } = await axios.post(`/account`, {
-        email,
+      const { data } = await axios.post(`/update-password`, {
         password,
       });
       if (data.error) {
         alert(data.error);
         setLoading(false);
       } else {
-        setState(data);
-        await AsyncStorage.setItem("@auth", JSON.stringify(data));
         setLoading(false);
-        console.log("Sing in successful =>", data);
-        alert("Sing in successful");
-        navigation.navigate("Home");
+        alert("👍 password updated successful");
+        setPassword("");
       }
     } catch (error) {
-      alert("Sing in failed try again");
+      alert("Password update failed try again");
       console.log(error);
       setLoading(false);
     }
@@ -82,6 +74,17 @@ const Account = ({ navigation }) => {
     }
     let base64Image = `data:image/png;base64,${pickerResult.assets[0].base64}`;
     setUploadImage(base64Image);
+
+    const { data } = await axios.post("upload-image", {
+      image: base64Image,
+    });
+
+    const as = JSON.parse(await AsyncStorage.getItem("@auth"));
+    as.user = data;
+    await AsyncStorage.setItem("@auth", JSON.stringify(as));
+    setState({ ...state, user: data });
+    setImage(data.image);
+    console.log("👍 Save Profile Image");
   };
 
   return (
