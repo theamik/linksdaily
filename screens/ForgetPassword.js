@@ -9,48 +9,73 @@ import SubmitButton from "../components/auth/SubmitButton";
 import UserInput from "../components/auth/UserInput";
 import { AuthContext } from "../contex/auth";
 
-const Signin = ({ navigation }) => {
+const ForgetPassword = ({ navigation }) => {
   const [email, setEmail] = useState();
   const [password, setPassword] = useState();
   const [loading, setLoading] = useState(false);
   const [state, setState] = useContext(AuthContext);
+  const [visible, setVisible] = useState(true);
+  const [resetCode, setResetCode] = useState();
   const handleSubmit = async () => {
     setLoading(true);
-    if (!email || !password) {
-      alert("All fields are required");
+    if (!email) {
+      alert("Email are required");
       setLoading(false);
       return;
     }
-    console.log("Sign in request=>", email, password);
     try {
-      const { data } = await axios.post(`/signin`, {
+      const { data } = await axios.post(`/forgot-password`, {
         email,
-        password,
       });
       if (data.error) {
         alert(data.error);
         setLoading(false);
       } else {
-        setState(data);
-        await AsyncStorage.setItem("@auth", JSON.stringify(data));
+        console.log("Reset Data", data);
         setLoading(false);
-        console.log("Sing in successful =>", data);
-        alert("Sing in successful");
-        navigation.navigate("Home");
+        setVisible(true);
+        alert("Check your mail for reset code!");
       }
     } catch (error) {
-      alert("Sing in failed try again");
+      alert("Error sending mail, try again");
       console.log(error);
       setLoading(false);
     }
   };
-
+  const handlePasswordReset = async () => {
+    setLoading(true);
+    if ((!email, !password, !resetCode)) {
+      alert("All filed are required");
+      setLoading(false);
+      return;
+    }
+    try {
+      const { data } = await axios.post(`/reset-password`, {
+        email,
+        password,
+        resetCode,
+      });
+      if (data.error) {
+        alert(data.error);
+        setLoading(false);
+      } else {
+        console.log("Reset Data", data);
+        setLoading(false);
+        alert("Now you can sing in with new password!");
+        navigation.navigate("Signin");
+      }
+    } catch (error) {
+      alert("Error sending mail, try again");
+      console.log(error);
+      setLoading(false);
+    }
+  };
   return (
     <KeyboardAwareScrollView>
       <View style={styles.container}>
         <CircleLogo />
         <Text center bold style={styles.text}>
-          Sign In
+          Password Recovery
         </Text>
         <UserInput
           name="EMAIL"
@@ -59,40 +84,45 @@ const Signin = ({ navigation }) => {
           autoCompleteType="email"
           keyboardType="email-address"
         />
-        <UserInput
-          name="PASSWORD"
-          value={password}
-          setValue={setPassword}
-          autoCompleteType="password"
-          secureTextEntry={true}
-        />
+        {visible ? (
+          <>
+            <UserInput
+              name="NEW PASSWORD"
+              value={password}
+              setValue={setPassword}
+              autoCompleteType="password"
+              secureTextEntry={true}
+            />
+            <UserInput
+              name="RESET CODE"
+              value={resetCode}
+              setValue={setResetCode}
+              secureTextEntry={true}
+            />
+          </>
+        ) : (
+          <></>
+        )}
         <SubmitButton
-          title="Sign In"
-          handleSubmit={handleSubmit}
+          title={visible ? "Reset Password" : "Request Reset Code"}
+          handleSubmit={visible ? handlePasswordReset : handleSubmit}
           loading={loading}
         />
-        {/* <Text>{JSON.stringify({ name, email, password }, null, 4)}</Text> */}
-        <Text small center>
-          No Account ?{" "}
-          <Text onPress={() => navigation.navigate("Signup")} color="#ff2222">
-            Sign Up
-          </Text>
-        </Text>
         <Text
           small
           center
           color="orange"
           style={{ marginTop: 10 }}
-          onPress={() => navigation.navigate("ForgetPassword")}
+          onPress={() => navigation.navigate("Signin")}
         >
-          Forget password ?
+          Sign In
         </Text>
       </View>
     </KeyboardAwareScrollView>
   );
 };
 
-export default Signin;
+export default ForgetPassword;
 
 const styles = StyleSheet.create({
   container: {

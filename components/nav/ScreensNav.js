@@ -9,6 +9,7 @@ import HeaderTabs from "./HeaderTabs";
 import Account from "../../screens/Account";
 import Post from "../../screens/Post";
 import Links from "../../screens/Links";
+import ForgetPassword from "../../screens/ForgetPassword";
 
 const Stack = createNativeStackNavigator();
 export default function ScreensNav() {
@@ -45,6 +46,13 @@ export default function ScreensNav() {
           <Stack.Screen
             name="Signup"
             component={Signup}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="ForgetPassword"
+            component={ForgetPassword}
             options={{
               headerShown: false,
             }}
