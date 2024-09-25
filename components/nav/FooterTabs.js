@@ -48,8 +48,8 @@ const FooterTabs = () => {
         <Tab
           name="plus-square"
           title="Post"
-          handlePress={() => navigation.navigate("Post")}
-          screenName="Post"
+          handlePress={() => navigation.navigate("PostLink")}
+          screenName="PostLink"
           routeName={route.name}
         />
         <Tab

@@ -10,6 +10,7 @@ import Account from "../../screens/Account";
 import Post from "../../screens/Post";
 import Links from "../../screens/Links";
 import ForgetPassword from "../../screens/ForgetPassword";
+import PostLink from "../../screens/PostLink";
 
 const Stack = createNativeStackNavigator();
 export default function ScreensNav() {
@@ -31,7 +32,13 @@ export default function ScreensNav() {
             }}
           />
           <Stack.Screen name="Account" component={Account} />
-          <Stack.Screen name="Post" component={Post} />
+          <Stack.Screen
+            name="PostLink"
+            component={PostLink}
+            options={{
+              title: "Post",
+            }}
+          />
           <Stack.Screen name="Links" component={Links} />
         </>
       ) : (
